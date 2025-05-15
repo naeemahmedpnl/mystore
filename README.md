@@ -4,7 +4,8 @@ A Flutter app that showcases products fetched from a dummy API with features lik
 
 ---
 ## App Demo
-![App Demo](assets/flutter_product_app_demo.mp4)
+
+[Download App Demo Video (25.6 MB)](https://github.com/naeemahmedpnl/mystore/raw/main/assets/flutter_product_app_demo.mp4)
 
 ## APIs Used
 
