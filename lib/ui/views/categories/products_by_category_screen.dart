@@ -85,7 +85,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Apple',
+                    hintText: 'Search products',
                     prefixIcon: const Icon(Icons.search),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 12),
