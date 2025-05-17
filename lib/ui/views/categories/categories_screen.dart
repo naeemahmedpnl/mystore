@@ -1,9 +1,10 @@
+// Update the error state in CategoriesScreen
 import 'package:flutter/material.dart';
+import 'package:my_store/core/errors/exceptions.dart';
 import 'package:my_store/ui/widgets/category_gird_card.dart';
 import 'package:provider/provider.dart';
 import '../../../viewmodels/categories_viewmodel.dart';
 import '../../../viewmodels/base_viewmodel.dart';
-
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -15,12 +16,14 @@ class CategoriesScreen extends StatefulWidget {
 class _CategoriesScreenState extends State<CategoriesScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  bool _errorDialogShown = false; // Add this flag
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<CategoriesViewModel>(context, listen: false).fetchAllCategories();
+      Provider.of<CategoriesViewModel>(context, listen: false)
+          .fetchAllCategories();
     });
   }
 
@@ -40,13 +43,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Title
-              const Text(
-                'Categories',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: const Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               // Search field
@@ -79,18 +84,67 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     if (viewModel.state == ViewState.busy) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (viewModel.state == ViewState.error) {
+                      // Show error dialog when error occurs
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (!_errorDialogShown) {
+                          _errorDialogShown = true;
+                          ErrorDialog.show(
+                            context,
+                            title: 'Connection Error',
+                            message: viewModel.errorMessage,
+                            onRetry: () {
+                              _errorDialogShown = false;
+                              viewModel.fetchAllCategories();
+                            },
+                          );
+                        }
+                      });
+
+                      // Show an error UI on the screen
                       return Center(
-                        child: Text(
-                          'Error: ${viewModel.errorMessage}',
-                          style: const TextStyle(color: Colors.red),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.cloud_off,
+                              color: Colors.grey,
+                              size: 80,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Unable to load categories',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              viewModel.errorMessage,
+                              style: TextStyle(color: Colors.grey[600]),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _errorDialogShown = false;
+                                viewModel.fetchAllCategories();
+                              },
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Retry'),
+                            ),
+                          ],
                         ),
                       );
                     } else {
+                      // Reset error dialog flag when we have successful data
+                      _errorDialogShown = false;
+
                       // Filter categories based on search query
-                      final filteredCategories = viewModel.categories.where((category) {
-                        return category.name.toLowerCase().contains(_searchQuery);
+                      final filteredCategories =
+                          viewModel.categories.where((category) {
+                        return category.name
+                            .toLowerCase()
+                            .contains(_searchQuery);
                       }).toList();
-                      
+
                       // Display number of results found and categories grid
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +160,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           Expanded(
                             child: GridView.builder(
                               padding: EdgeInsets.zero,
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 childAspectRatio: 1.0,
                                 crossAxisSpacing: 16,
@@ -114,7 +169,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               ),
                               itemCount: filteredCategories.length,
                               itemBuilder: (context, index) {
-                                return CategoryGridCard(category: filteredCategories[index]);
+                                return CategoryGridCard(
+                                    category: filteredCategories[index]);
                               },
                             ),
                           ),

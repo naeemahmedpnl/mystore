@@ -30,13 +30,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Title
-              const Text(
-                'Favourites',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: const Text(
+                  'Favourites',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               // Search field
@@ -75,13 +77,20 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       );
                     } else {
                       // Filter favorites based on search query
-                      final filteredFavorites = viewModel.favorites.where((product) {
-                        return product.title.toLowerCase().contains(_searchQuery) ||
-                               product.description.toLowerCase().contains(_searchQuery) ||
-                               product.category.toLowerCase().contains(_searchQuery) ||
-                               product.brand.toLowerCase().contains(_searchQuery);
+                      final filteredFavorites =
+                          viewModel.favorites.where((product) {
+                        return product.title
+                                .toLowerCase()
+                                .contains(_searchQuery) ||
+                            product.description
+                                .toLowerCase()
+                                .contains(_searchQuery) ||
+                            product.category
+                                .toLowerCase()
+                                .contains(_searchQuery) ||
+                            product.brand.toLowerCase().contains(_searchQuery);
                       }).toList();
-                      
+
                       // Display number of results found and favorites list
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +108,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               padding: EdgeInsets.zero,
                               itemCount: filteredFavorites.length,
                               itemBuilder: (context, index) {
-                                return FavoriteListItem(product: filteredFavorites[index]);
+                                return FavoriteListItem(
+                                    product: filteredFavorites[index]);
                               },
                             ),
                           ),

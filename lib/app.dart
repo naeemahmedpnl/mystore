@@ -1,5 +1,6 @@
 // lib/app.dart
 import 'package:flutter/material.dart';
+import 'package:my_store/data/repositories/category_repository.dart';
 import 'package:provider/provider.dart';
 import 'ui/views/splash/splash_screen.dart';
 import 'viewmodels/products_viewmodel.dart';
@@ -15,7 +16,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProductsViewModel()),
-        ChangeNotifierProvider(create: (_) => CategoriesViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => CategoriesViewModel(
+            categoryRepository: CategoryRepository(),
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => FavoritesViewModel()),
       ],
       child: MaterialApp(

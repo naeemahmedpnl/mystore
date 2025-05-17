@@ -57,8 +57,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import '../products/products_screen.dart';
 import '../categories/categories_screen.dart';
@@ -75,11 +73,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _screens = [
+  static final List<Widget> _screens = [
     ProductsScreen(),
     CategoriesScreen(),
-    FavoritesScreen(),
-    UserScreen(),
+    const FavoritesScreen(),
+    const UserScreen(),
   ];
 
   void _onItemTapped(int index) {

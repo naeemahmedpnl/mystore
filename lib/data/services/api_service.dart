@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:my_store/core/errors/exceptions.dart';
 import '../../core/constants/api_constants.dart';
-import '../../core/errors/exceptions.dart';
 import '../../core/utils/app_logger.dart';
 
 class ApiService {
@@ -14,12 +15,26 @@ class ApiService {
     AppLogger.info('API Request: GET $url');
 
     try {
-      final response = await client.get(url);
+      final response = await client.get(url, headers: {
+        'Content-Type': 'application/json',
+      }).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw const SocketException('Connection timed out');
+        },
+      );
 
       // Log the response status code
       AppLogger.info('API Response Status: ${response.statusCode}');
 
       return _processResponse(response);
+    } on SocketException catch (e) {
+      // Handle network errors specifically
+      AppLogger.error('Network Error: ${e.message}');
+      throw ApiException(
+        message: 'No internet connection. Please check your network settings.',
+        statusCode: null,
+      );
     } catch (e) {
       // Log any errors during request
       AppLogger.error('API Request Error: $e');
