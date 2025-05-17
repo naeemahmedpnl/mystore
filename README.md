@@ -3,6 +3,9 @@
 A Flutter app that showcases products fetched from a dummy API with features like category filtering, product details, search functionality, and favorites management.
 
 ---
+## App Demo
+
+[Download App Demo Video (25.6 MB)](https://github.com/naeemahmedpnl/mystore/raw/main/assets/flutter_product_app_demo.mp4)
 
 ## APIs Used
 
