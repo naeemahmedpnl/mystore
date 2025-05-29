@@ -1,4 +1,4 @@
-// Update the error state in CategoriesScreen
+
 import 'package:flutter/material.dart';
 import 'package:my_store/core/errors/exceptions.dart';
 import 'package:my_store/ui/widgets/category_gird_card.dart';
